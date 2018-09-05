@@ -74,7 +74,29 @@
 			<hr>
 			<p> Why was my vehicle impounded? </p>
 			<textarea id="r-reason" class="form-control" disabled rows="5"></textarea>
-        </div>
+		</div>
+		
+		<div id="admin-terminal">
+			<h1>Impounded Vehicles</h1>
+			<span id="exit">&#x2715;</span>
+			<hr>
+			<div class="scrollable">
+				<table>
+					<thead>
+						<tr>
+							<th>Plate</th>
+							<th>Release date </th>
+							<th>Fee</th>
+							<th>Authorizing officer</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="impounded-vehicles">
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
 
         <script src="script.js" type="text/javascript"></script>
     </body>

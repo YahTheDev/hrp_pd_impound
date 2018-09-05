@@ -1,6 +1,7 @@
 client_scripts {
+	'config.lua',
 	'client.lua',
-	'json.lua'
+	'json.lua',
 }
 
 server_scripts {

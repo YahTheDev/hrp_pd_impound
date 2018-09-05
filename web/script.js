@@ -22,12 +22,18 @@ $(document).ready(function () {
 			if (data.form === "retrieve") {
 				$('#retrieve-form').css('display', 'block');
 				setupRetrievalForm(data);
-			}		
+			}	
+			
+			if (data.form === "admin") {
+				$('#admin-terminal').css('display', 'block');
+				setupAdminTerminal(data);
+			}	
 		}
 		
 		if (data.action == "close") {
 			$('#impound-form').css('display', 'none');
 			$('#retrieve-form').css('display', 'none');
+			$('#admin-terminal').css('display', 'none');
 		}
 	});
 		
@@ -149,6 +155,10 @@ $(document).ready(function () {
 		$(rReason).text(rData.vehicles[0].reason);
 		$('#impounded-vehicles').html(vehicleHtml);
 	}
+
+	function setupAdminTerminal () {
+
+	}
 	
 	$('table').on('click', '.pay', function () {
 		var plate = $(this).parent().parent().find('#plate').text();
@@ -160,7 +170,7 @@ $(document).ready(function () {
 		index = index.replace("info", "");
 		$(rReason).text(rData.vehicles[parseInt(index)].reason);
 	});
-	
+
 	
 	$('#cancel, #exit').click(function (event) {
 		$.post('http://hrp_pd_impound/escape', null);

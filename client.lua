@@ -146,6 +146,19 @@ function ShowImpoundMenu (action)
 	
 end
 
+function ShowAdminTerminal () 
+	_GuiEnabled = true
+	SetNuiFocus(true, true)
+	local data = {
+		action = "open",
+		form = "admin",
+		user = _OwnPlayerData,
+		vehicles = _ImpoundedVehicles
+	}
+	
+	SendNuiMessage(json.encode(data))
+end
+
 function DisableImpoundMenu ()
 	_GuiEnabled = false
 	SetNuiFocus(false)
@@ -176,7 +189,7 @@ end
 RegisterNUICallback('escape', function(data, cb)
 	DisableImpoundMenu()
 
-    cb('ok')
+    -- cb('ok')
 end)
 
 RegisterNUICallback('impound', function(data, cb)	
@@ -195,14 +208,14 @@ RegisterNUICallback('impound', function(data, cb)
 	_ESX.Game.DeleteVehicle(_ESX.Game.GetClosestVehicle());
 	
 	DisableImpoundMenu()
-    cb('ok')
+    -- cb('ok')
 end)
 
 RegisterNUICallback('unimpound', function(plate, cb)
 	Citizen.Trace("Unimpounding:" .. plate)
 	TriggerServerEvent('HRP:Impound:UnimpoundVehicle', plate);
 	DisableImpoundMenu();
-	cb('ok');
+	-- cb('ok');
 end)
 
 ----------------------------------------------------------------------------------------------------
@@ -236,8 +249,23 @@ Citizen.CreateThread(function ()
 					_ESX.ShowHelpNotification("Press ~INPUT_CONTEXT~ To impound this vehicle");
 					
 				end
+
 			else 	
-				_CurrentAction = nil	
+				for i=1, #_Impound.AdminTerminalLocations, 1 do
+					if (GetDistanceBetweenCoords(_Impound.AdminTerminalLocations[i].x, _Impound.AdminTerminalLocations[i].y, _Impound.AdminTerminalLocations[i].z,
+					PlayerPedCoords.x, PlayerPedCoords.y, PlayerPedCoords.z, false) < 3) then
+
+						if (_CurrentAction ~= "admin" and (_XPlayer.job.name == "police" or _XPlayer.job.name == "mecano")) then
+				
+							_CurrentAction = "admin"
+							_ESX.ShowHelpNotification("Press ~INPUT_CONTEXT~ To open the admin terminal");			
+						end
+					
+						break;
+					else 
+						_CurrentAction = nil
+					end
+				end
 			end
 		end
 	end
@@ -252,6 +280,8 @@ Citizen.CreateThread(function ()
 				ShowRetrievalMenu()
 			elseif (_CurrentAction == "store") then
 				ShowImpoundMenu("store")
+			elseif (_CurrentAction == "admin") then
+				ShowAdminTerminal("admin")
 			end
 		end
 	end
