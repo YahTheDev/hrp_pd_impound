@@ -7,18 +7,7 @@ local _XPlayer = nil;
 local _OwnPlayerData = nil;
 local _DependenciesLoaded = false;
 
-local _Impound = {
-	Name = "MissionRow",
-	RetrieveLocation = { X = 826.30, Y = -1290.20, Z = 28.60 },
-	StoreLocation = { X = 872.64, Y = -1350.50, Z = 26.30 },
-	SpawnLocations = {
-		{ x = 818.21, y = -1334.90, z = 26.10 , h = 180.00},
-		{ x = 818.21, y = -1341.20, z = 26.10 , h = 180.00},
-		{ x = 818.21, y = -1349.00, z = 26.10 , h = 180.00},
-		{ x = 818.21, y = -1355.00, z = 26.10 , h = 180.00},
-		{ x = 818.21, y = -1363.00, z = 26.10 , h = 180.00},
-	}
-}
+local _Impound = Config.Impound
 
 local _GuiEnabled = false
 
@@ -119,6 +108,7 @@ function ShowImpoundMenu (action)
 	
 	if (vehicle ~= nil) then
 		local v = _ESX.Game.GetVehicleProperties(vehicle)
+		local data = {}
 		
 		TriggerServerEvent('HRP:ESX:GetCharacter', _XPlayer.identifier)
 		TriggerServerEvent('HRP:ESX:GetVehicleAndOwner', v.plate)
@@ -129,20 +119,26 @@ function ShowImpoundMenu (action)
 			return
 		end
 		
-		local owner = _VehicleAndOwner.firstname .. ' ' .. _VehicleAndOwner.lastname
+		data.action = "open"
+		data.form 	= "impound"
+		data.rules  = Config.Rules
+		data.vehicle = { 
+			plate = _VehicleAndOwner.plate,
+			owner = _VehicleAndOwner.firstname .. ' ' .. _VehicleAndOwner.lastname
+			}
 			
 		if (_XPlayer.job.name == 'police') then
-			local officer = _OwnPlayerData.firstname .. ' ' .. _OwnPlayerData.lastname;
+			data.officer = _OwnPlayerData.firstname .. ' ' .. _OwnPlayerData.lastname;
 			_GuiEnabled = true
 			SetNuiFocus(true, true)
-			SendNuiMessage('{"action":"open", "form": "impound", "vehicle": { "plate": "' .. _VehicleAndOwner.plate .. '", "owner": "' .. owner .. '"}, "officer": "' .. officer .. '"}')
+			SendNuiMessage(json.encode(data))
 		end
 		
 		if (_XPlayer.job.name == 'mecano') then
-			local mechanic = _OwnPlayerData.firstname .. ' ' .. _OwnPlayerData.lastname;
+			data.mechanic = _OwnPlayerData.firstname .. ' ' .. _OwnPlayerData.lastname;
 			_GuiEnabled = true
 			SetNuiFocus(true, true)
-			SendNuiMessage('{"action":"open", "form": "impound", "vehicle": { "plate": "' .. _VehicleAndOwner.plate .. '", "owner": "' .. owner .. '"}, "mechanic": "' .. mechanic .. '"}')
+			SendNuiMessage(json.encode(data))
 		end
 	else 
 		_ESX.ShowNotification('No vehicle nearby');
