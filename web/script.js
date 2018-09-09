@@ -6,6 +6,7 @@ $(document).ready(function () {
 	// Retrieval form vars
 	var rData 	= null;
 	var rReason = document.getElementById('r-reason');
+	var holdBy = document.getElementById('hold-by');
 				
 	window.addEventListener('message', function (event) {
 		
@@ -64,12 +65,9 @@ $(document).ready(function () {
 		var weeks 		= $('#weeks').val();
 		var days 		= $('#days').val();
 		var totalDays   = (parseInt(weeks) * 7) + parseInt(days);
-				console.log(releaseDate);
-		console.log(totalDays);
 		releaseDate.setDate(releaseDate.getDate() + totalDays);
-						console.log(releaseDate);
 		releaseDate.addMonths(1);
-				console.log(releaseDate);
+
 
 		var datestring = releaseDate.getFullYear() + "-" + releaseDate.getMonth() + '-' + releaseDate.getDate();
 		
@@ -82,6 +80,8 @@ $(document).ready(function () {
 				fee: $('#fee').val(),
 				reason: $('#reason').val(),
 				notes: $('#notes').val() || null,
+				hold_o: $('#hold_o').find('input').prop("checked") ? 1: 0,
+				hold_m: $('#hold_m').find('input').prop("checked") ? 1: 0
 			}));
 		}
 	});
@@ -136,7 +136,7 @@ $(document).ready(function () {
 				<td id="price">$ ${data.vehicles[i].fee}.00</td>
 				<td id="officer">${officer}</td>`
 						
-			if(releasedate.getTime() > currentdate.getTime() || data.user.money < data.vehicles[i].fee) {
+			if(releasedate.getTime() > currentdate.getTime() || data.user.money < data.vehicles[i].fee || data.vehicles[i].hold_m || data.vehicles[i].hold_o) {
 				button = `<td>
 					<button class="btn info mr" id="info${i}">Info</button>
 					<button class="btn pay success" id="pay${i}" disabled>Pay</button>
@@ -153,22 +153,83 @@ $(document).ready(function () {
 		}
 		
 		$(rReason).text(rData.vehicles[0].reason);
+		if(rData.vehicles[0].hold_o) {
+			$(holdBy).text(`This vehicle must be unlocked by an officer`);
+		} else if (rData.vehicles[0].hold_m) {
+			$(holdBy).text(`This vehicle must be unlocked by a mechanic`);
+		} else {
+			$(holdBy).text(``);
+		}
 		$('#impounded-vehicles').html(vehicleHtml);
 	}
 
-	function setupAdminTerminal () {
+	function setupAdminTerminal (data) {
+		var vehicleHtml = "";
+		rData = data;
 
+		for(var i = 0; i < data.vehicles.length; i++) {
+			
+			var officer = "";
+			
+			if(data.vehicles[i].officer) {
+				var t = data.vehicles[i].officer.split(" ");
+				officer = t[0].charAt(0) + '. ' + t[1];
+			}
+			
+			var row = `<tr>
+				<td id="plate">${data.vehicles[i].plate}</td>
+				<td id="date">${formatDate(new Date(data.vehicles[i].releasedate))}</td>
+				<td id="price">$ ${data.vehicles[i].fee}.00</td>
+				<td id="officer">${officer}</td>`
+			
+			if(data.job != "police" && data.vehicles[i].hold_o == true) {
+				var button = `<td>
+					<button class="btn info mr" id="info${i}">Info</button>
+					<button class="btn unlock success" id="${i}">Unlock</button>
+				</td></tr>`
+			} else if (!data.vehicles[i].hold_o && !data.vehicles[i].hold_m) {
+				var button = `<td>
+				<button class="btn info mr" id="info${i}">Info</button>
+				</td></tr>`
+			} else {
+				var button = `<td>
+				<button class="btn info mr" id="info${i}">Info</button>
+				<button class="btn unlock success" id="${i}" disabled>Unlock</button>
+				</td></tr>`
+			}
+			
+			row = row + button;
+			vehicleHtml = vehicleHtml + row;
+		}
+
+		$('#admin-reason').text(rData.vehicles[0].reason);
+		$('#admin-impounded-vehicles').html(vehicleHtml);
 	}
 	
 	$('table').on('click', '.pay', function () {
 		var plate = $(this).parent().parent().find('#plate').text();
 		$.post('http://hrp_pd_impound/unimpound', JSON.stringify(plate));
 	});
+
+	$('table').on('click', '.unlock', function () {
+		var plate = $(this).parent().parent().find('#plate').text();
+		$.post('http://hrp_pd_impound/unlock', JSON.stringify(plate));
+	});
 	
 	$('table').on('click', '.info', function () {
 		var index = $(this).attr('id');
 		index = index.replace("info", "");
+		$('#admin-reason').text(rData.vehicles[parseInt(index)].reason);
+		console.log(rData.vehicles[parseInt(index)].hold_o)
+		if(rData.vehicles[parseInt(index)].hold_o) {
+			$(holdBy).text(`This vehicle must be unlocked by an officer`);
+		} else if (rData.vehicles[parseInt(index)].hold_m) {
+			$(holdBy).text(`This vehicle must be unlocked by a mechanic`);
+		} else {
+			$(holdBy).text(``);
+		}
 		$(rReason).text(rData.vehicles[parseInt(index)].reason);
+
 	});
 
 	

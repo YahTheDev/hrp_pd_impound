@@ -8,12 +8,14 @@ local _UnimpoundedVehicleCount = 1;
 
 RegisterServerEvent('HRP:Impound:ImpoundVehicle')
 RegisterServerEvent('HRP:Impound:GetImpoundedVehicles')
+RegisterServerEvent('HRP:Impound:GetVehicles')
 RegisterServerEvent('HRP:Impound:UnimpoundVehicle')
+RegisterServerEvent('HRP:Impound:UnlockVehicle')
 
 AddEventHandler('HRP:Impound:ImpoundVehicle', function (form)
 	Citizen.Trace("HRP: Impounding vehicle: " .. form.plate);
 	_source = source;
-	MySQL.Async.execute('INSERT INTO `h_impounded_vehicles` VALUES (@plate, @officer, @mechanic, @releasedate, @fee, @reason, @notes, CONCAT(@vehicle), @identifier)',
+	MySQL.Async.execute('INSERT INTO `h_impounded_vehicles` VALUES (@plate, @officer, @mechanic, @releasedate, @fee, @reason, @notes, CONCAT(@vehicle), @identifier, @hold_o, @hold_m)',
 		{
 			['@plate'] 			= form.plate,
 			['@officer']     	= form.officer,
@@ -23,7 +25,9 @@ AddEventHandler('HRP:Impound:ImpoundVehicle', function (form)
 			['@reason']			= form.reason, 
 			['@notes']			= form.notes,
 			['@vehicle']		= form.vehicle,
-			['@identifier']		= form.identifier
+			['@identifier']		= form.identifier,
+			['@hold_o']			= form.hold_o,
+			['@hold_m']			= form.hold_m
 		}, function(rowsChanged)
 			if (rowsChanged == 0) then
 				TriggerClientEvent('esx:showNotification', _source, 'Could not impound')
@@ -74,6 +78,25 @@ AddEventHandler('HRP:Impound:UnimpoundVehicle', function (plate)
 			TriggerClientEvent('HRP:Impound:VehicleUnimpounded', _source, veh[1], _UnimpoundedVehicleCount)
 		end)
 	end
+end)
+
+AddEventHandler('HRP:Impound:GetVehicles', function ()
+	_source = source;
+
+	local vehicles = MySQL.Async.fetchAll('SELECT * FROM `h_impounded_vehicles`', nil, function (vehicles)
+		Citizen.Trace("VEHICLES")
+		Citizen.Trace(vehicles[1].plate)
+
+		TriggerClientEvent('HRP:Impound:SetImpoundedVehicles', _source, vehicles);
+	end);
+end)
+
+AddEventHandler('HRP:Impound:UnlockVehicle', function (plate) 
+	MySQL.Async.execute('UPDATE `h_impounded_vehicles` SET `hold_m` = false, `hold_o` = false WHERE `plate` = @plate', {
+		['@plate'] = plate
+	}, function (bs) 
+		-- Something
+	end)
 end)
 
 -------------------------------------------------------------------------------------------------------------------------------

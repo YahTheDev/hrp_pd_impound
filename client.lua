@@ -148,6 +148,10 @@ end
 
 function ShowAdminTerminal () 
 	_GuiEnabled = true
+
+	TriggerServerEvent('HRP:Impound:GetVehicles')
+	Citizen.Wait(500)
+
 	SetNuiFocus(true, true)
 	local data = {
 		action = "open",
@@ -180,6 +184,7 @@ function ShowRetrievalMenu ()
 		action = "open",
 		form = "retrieve",
 		user = _OwnPlayerData,
+		job = _XPlayer.job,
 		vehicles = _ImpoundedVehicles
 	}
 	
@@ -218,13 +223,18 @@ RegisterNUICallback('unimpound', function(plate, cb)
 	-- cb('ok');
 end)
 
+RegisterNUICallback('unlock', function(plate, cb)
+	TriggerServerEvent('HRP:Impound:UnlockVehicle', plate)
+end)
 ----------------------------------------------------------------------------------------------------
 -- Background tasks
 ----------------------------------------------------------------------------------------------------
 
 -- Decide what the player is currently doing and showing a help notification.
 Citizen.CreateThread(function ()
+
 	while true do
+		inZone = false;
 		Citizen.Wait(500)
 		if(_DependenciesLoaded) then
 			local PlayerPed = GetPlayerPed(PlayerId())
@@ -232,6 +242,8 @@ Citizen.CreateThread(function ()
 			
 			if (GetDistanceBetweenCoords(_Impound.RetrieveLocation.X, _Impound.RetrieveLocation.Y, _Impound.RetrieveLocation.Z,
 				PlayerPedCoords.x, PlayerPedCoords.y, PlayerPedCoords.z, false) < 3) then
+					
+				inZone = true;
 				
 				if (_CurrentAction ~= "retrieve") then	
 				
@@ -242,6 +254,8 @@ Citizen.CreateThread(function ()
 							
 			elseif (GetDistanceBetweenCoords(_Impound.StoreLocation.X, _Impound.StoreLocation.Y, _Impound.StoreLocation.Z,
 				PlayerPedCoords.x, PlayerPedCoords.y, PlayerPedCoords.z, false) < 3) then
+
+				inZone = true;
 				
 				if (_CurrentAction ~= "store" and (_XPlayer.job.name == "police" or _XPlayer.job.name == "mecano")) then
 				
@@ -250,10 +264,12 @@ Citizen.CreateThread(function ()
 					
 				end
 
-			else 	
-				for i=1, #_Impound.AdminTerminalLocations, 1 do
-					if (GetDistanceBetweenCoords(_Impound.AdminTerminalLocations[i].x, _Impound.AdminTerminalLocations[i].y, _Impound.AdminTerminalLocations[i].z,
+			else
+				for i, location in ipairs(_Impound.AdminTerminalLocations) do
+					if (GetDistanceBetweenCoords(location.x, location.y, location.z,
 					PlayerPedCoords.x, PlayerPedCoords.y, PlayerPedCoords.z, false) < 3) then
+
+						inZone = true;
 
 						if (_CurrentAction ~= "admin" and (_XPlayer.job.name == "police" or _XPlayer.job.name == "mecano")) then
 				
@@ -262,11 +278,13 @@ Citizen.CreateThread(function ()
 						end
 					
 						break;
-					else 
-						_CurrentAction = nil
 					end
 				end
 			end
+		end
+
+		if not inZone then
+			_CurrentAction = nil;
 		end
 	end
 end)
