@@ -12,4 +12,5 @@ CREATE TABLE IF NOT EXiSTS `h_impounded_vehicles` (
 );
 
 ALTER TABLE `h_impounded_vehicles`
-	ADD COLUMN `hold` boolean default false
+	ADD COLUMN `hold_o` boolean default false,
+	ADD COLUMN `hold_m` boolean default false
