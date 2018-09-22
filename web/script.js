@@ -7,10 +7,13 @@ $(document).ready(function () {
 	var rData 	= null;
 	var rReason = document.getElementById('r-reason');
 	var holdBy = document.getElementById('hold-by');
+
+	var rules = null;
 				
 	window.addEventListener('message', function (event) {
 		
 		var data = event.data;
+		rules = event.data.rules;
 		
 		if (data.action === "open") {
 			
@@ -57,6 +60,11 @@ $(document).ready(function () {
 		
 		$('#owner').text(data.vehicle.owner);
 		$('#plate').text(data.vehicle.plate);
+
+		$('#weeks').attr("placeholder", `0 - ${rules.maxWeeks} Weeks`);
+		$('#days').attr("placeholder", `0 - ${rules.maxDays} Days`);
+		$('#fee').attr("placeholder", `${rules.minFee} - ${rules.maxFee}`);
+		$('#reason').attr("placeholder", `Enter a detailed description of ${rules.minReasonLength} characters or more`)
 	}
 	
 	
@@ -96,18 +104,18 @@ $(document).ready(function () {
 		var fee = $('#fee').val();
 		var reason = $('#reason').val();
 		
-		if(weeks.isNaN || String(weeks).length < 1 || parseInt(weeks) < 0 || parseInt(weeks) > 41 || days.isNaN || String(days).length < 1 || parseInt(days) < 0 || parseInt(days) > 6) {
-			errors.append(`<small>&#9679; Weeks have to be 0 or less than 41, days either 0 or less than 7.</small>`);
+		if(weeks.isNaN || String(weeks).length < 1 || parseInt(weeks) < 0 || parseInt(weeks) > reason.maxWeeks || days.isNaN || String(days).length < 1 || parseInt(days) < reason.minDays || parseInt(days) > rules.maxDays) {
+			errors.append(`<small>&#9679; Weeks have to be 0 or less than ${rules.maxWeeks}, days either 0 or less than ${rules.maxDays}.</small>`);
 			success = false;
 		}
 		
-		if(fee.isNaN || String(fee).length < 1 || parseInt(fee) < 250 || parseInt(fee) > 1000000) {
-			errors.append(`<small>&#9679; Fee cannot be less than 250 or more than 1.000.000</small>`);
+		if(fee.isNaN || String(fee).length < 1 || parseInt(fee) < rules.minFee || parseInt(fee) > rules.maxFee) {
+			errors.append(`<small>&#9679; Fee cannot be less than ${rules.minFee} or more than ${rules.maxFee}</small>`);
 			success = false;
 		}
 		
-		if(reason.length < 25 || reason.length > 10000) {
-			errors.append(`<small>&#9679; Reason for impoundment cannot be less that 25 characters long.</small>`);
+		if(reason.length < rules.minReasonLength || reason.length > 10000) {
+			errors.append(`<small>&#9679; Reason for impoundment cannot be less that ${rules.minReasonLength} characters long.</small>`);
 			success = false;
 		}
 		

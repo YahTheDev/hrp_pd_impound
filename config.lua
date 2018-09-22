@@ -18,11 +18,11 @@ Config.Impound 			= {
 }
 
 Config.Rules = {
-	MaxWeeks		= 41,
-	MaxDays			= 6,
+	maxWeeks		= 5,
+	maxDays			= 6,
 
-	MinFee			= 250,
-	MaxFee 			= 1000000,
+	minFee			= 50,
+	maxFee 			= 15000,
 
-	MinReasonLength	= 25,
+	minReasonLength	= 10,
 }
