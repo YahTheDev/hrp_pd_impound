@@ -1,4 +1,4 @@
-CREATE TABLE `h_impounded_vehicles` (
+CREATE TABLE IF NOT EXiSTS `h_impounded_vehicles` (
   `plate` varchar(12) NOT NULL,
   `officer` varchar(255) DEFAULT NULL,
   `mechanic` varchar(255) DEFAULT NULL,
@@ -10,3 +10,7 @@ CREATE TABLE `h_impounded_vehicles` (
   `identifier` varchar(30) NOT NULL,
   PRIMARY KEY (`plate`)
 );
+
+ALTER TABLE `h_impounded_vehicles`
+	ADD COLUMN `hold_o` boolean default false,
+	ADD COLUMN `hold_m` boolean default false

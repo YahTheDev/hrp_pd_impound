@@ -13,7 +13,7 @@
 	color: grey;
 }
 
-#impound-form, #retrieve-form {
+#impound-form, #retrieve-form, #admin-terminal {
 	overflow: hidden;
 	font-family: sans-serif;
     width: 740px;
@@ -189,4 +189,25 @@ th {
 
 .ml {
 	margin-left: 5px;
+}
+
+#admin-terminal {
+	display: none;
+	bottom: 500;
+}
+
+.checkbox {
+	width: 60%;
+	display: block;
+}
+
+.checkbox input {
+	position: absolute;
+	left: 350px;
+}
+
+.error {
+	color: #d81e1e;
+	display: block;
+	font-weight: bold;
 }
