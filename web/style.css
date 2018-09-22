@@ -68,9 +68,13 @@ label {
 	display: inline-block;
 }
 
-#impound-form #officer, #impound-form #mechanic, #impound-form #duration, #impound-form #weeks {
+#impound-form #officer, #impound-form #mechanic, #impound-form #duration {
 	width: calc(50% - 5px);
 	display: inline-block;
+}
+
+#impound-form #weeks, #impound-form #days, #impound-form #hours {
+	width: calc((100% - 8px) / 3);
 }
 
 #impound-form #weeks {
@@ -89,10 +93,6 @@ label {
 #duration-row label {
 	width: 50%;
 	display: inline-block;
-}
-
-#duration-row #days {
-	margin-right: -3px;
 }
 
 #impound-form #fee-row label, #fee {
