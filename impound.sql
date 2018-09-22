@@ -11,6 +11,10 @@ CREATE TABLE IF NOT EXiSTS `h_impounded_vehicles` (
   PRIMARY KEY (`plate`)
 );
 
+-- Update 01
 ALTER TABLE `h_impounded_vehicles`
 	ADD COLUMN `hold_o` boolean default false,
-	ADD COLUMN `hold_m` boolean default false
+	ADD COLUMN `hold_m` boolean default false;
+
+-- Update 03 Hours
+ALTER TABLE h_impounded_vehicles  MODIFY COLUMN `releasedate` DATETIME;
