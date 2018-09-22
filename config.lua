@@ -20,6 +20,7 @@ Config.Impound 			= {
 Config.Rules = {
 	maxWeeks		= 5,
 	maxDays			= 6,
+	maxHours		= 23,
 
 	minFee			= 50,
 	maxFee 			= 15000,
