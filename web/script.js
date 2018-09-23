@@ -14,7 +14,7 @@ $(document).ready(function () {
 		
 		var data = event.data;
 		rules = event.data.rules;
-		
+
 		if (data.action === "open") {
 			
 			
@@ -188,9 +188,9 @@ $(document).ready(function () {
 				<td id="plate">${data.vehicles[i].plate}</td>
 				<td id="date">${formatDate(new Date(data.vehicles[i].releasedate))}</td>
 				<td id="price">$ ${data.vehicles[i].fee}.00</td>
-				<td id="officer">${officer}</td>`
+				<td id="officer">${officer}</td>`;
 			
-			if(data.job != "police" && data.vehicles[i].hold_o == true) {
+			if((data.job.name == "police" && data.vehicles[i].hold_o) || (data.job.name == "mecano" && data.vehicles[i].hold_m)) {
 				var button = `<td>
 					<button class="btn info mr" id="info${i}">Info</button>
 					<button class="btn unlock success" id="${i}">Unlock</button>
@@ -204,7 +204,9 @@ $(document).ready(function () {
 				<button class="btn info mr" id="info${i}">Info</button>
 				<button class="btn unlock success" id="${i}" disabled>Unlock</button>
 				</td></tr>`
-			}
+			}		
+			
+			$("admin-reason").text(rData.vehicles[0].reason);
 			
 			row = row + button;
 			vehicleHtml = vehicleHtml + row;
@@ -228,7 +230,7 @@ $(document).ready(function () {
 		var index = $(this).attr('id');
 		index = index.replace("info", "");
 		$('#admin-reason').text(rData.vehicles[parseInt(index)].reason);
-		console.log(rData.vehicles[parseInt(index)].hold_o)
+
 		if(rData.vehicles[parseInt(index)].hold_o) {
 			$(holdBy).text(`This vehicle must be unlocked by an officer`);
 		} else if (rData.vehicles[parseInt(index)].hold_m) {

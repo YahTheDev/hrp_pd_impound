@@ -147,6 +147,7 @@ function ShowImpoundMenu (action)
 end
 
 function ShowAdminTerminal () 
+	_XPlayer = _ESX.GetPlayerData()
 	_GuiEnabled = true
 
 	TriggerServerEvent('HRP:Impound:GetVehicles')
@@ -157,6 +158,7 @@ function ShowAdminTerminal ()
 		action = "open",
 		form = "admin",
 		user = _OwnPlayerData,
+		job = _XPlayer.job,
 		vehicles = _ImpoundedVehicles
 	}
 	
@@ -174,6 +176,8 @@ end
 
 function ShowRetrievalMenu ()
 	
+	_XPlayer = _ESX.GetPlayerData()
+
 	TriggerServerEvent('HRP:ESX:GetCharacter', _XPlayer.identifier)
 	TriggerServerEvent('HRP:Impound:GetImpoundedVehicles', _XPlayer.identifier)
 	Citizen.Wait(500)
@@ -187,7 +191,7 @@ function ShowRetrievalMenu ()
 		job = _XPlayer.job,
 		vehicles = _ImpoundedVehicles
 	}
-	
+
 	SendNuiMessage(json.encode(data))
 end
 
