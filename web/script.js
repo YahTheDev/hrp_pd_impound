@@ -78,10 +78,8 @@ $(document).ready(function () {
 		releaseDate.setDate(releaseDate.getDate() + totalDays);
 		//releaseDate.addMonths(1);
 		releaseDate.setHours(releaseDate.getHours() + (parseInt(hours) || 0));
-		console.log(releaseDate);
 
 		var datestring = releaseDate.toISOString().slice(0, 19).replace('T', ' ');
-		console.log(releaseDate);
 		if(validateImpoundForm()) {
 			$.post('http://hrp_pd_impound/impound', JSON.stringify({
 				plate: $('#plate').text(),
@@ -107,8 +105,6 @@ $(document).ready(function () {
 		var hours = $('#hours').val();
 		var fee = $('#fee').val();
 		var reason = $('#reason').val();
-
-		console.log('hours ' + hours);
 		
 		if(String(weeks).length < 1 || parseInt(weeks) < 0 || parseInt(weeks) > rules.maxWeeks || String(days).length < 1 || parseInt(days) < reason.minDays || parseInt(days) > rules.maxDays || String(hours).length < 1 || parseInt(hours) < 0 || parseInt(hours) > rules.maxHours) {
 			errors.append(`<small>&#9679; Weeks have to be 0 or less than ${rules.maxWeeks}, days either 0 or less than ${rules.maxDays} and hours either 0 or less than ${rules.maxHours}.</small>`);
