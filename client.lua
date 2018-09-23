@@ -77,10 +77,28 @@ RegisterNetEvent('HRP:Impound:VehicleUnimpounded')
 AddEventHandler('HRP:Impound:VehicleUnimpounded', function (data, index)
 	local spawnLocationIndex = index % 3 + 1
 	local localVehicle = json.decode(data.vehicle)
-
+	print(localVehicle.health);
 	_ESX.Game.SpawnVehicle(localVehicle.model, _Impound.SpawnLocations[spawnLocationIndex], 
 		_Impound.SpawnLocations[spawnLocationIndex].h, function (spawnedVehicle)
 		_ESX.Game.SetVehicleProperties(spawnedVehicle, localVehicle)
+		
+		
+		print(GetNumVehicleWindowTints(spawnedVehicle));
+		SetVehicleEngineHealth(spawnedVehicle, localVehicle.engineHealth);
+		SetVehicleBodyHealth(spawnedVehicle, localVehicle.bodyHealth);
+		SetVehicleFuelLevel(spawnedVehicle, localVehicle.fuelLevel);
+		SetVehiclePetrolTankHealth(spawnedVehicle, localVehicle.petrolTankHealth);
+		SetVehicleOilLevel(spawnedVehicle, localVehicle.oilLevel);
+		SetVehicleDirtLevel(spawnedVehicle, localVehicle.dirtLevel);
+
+		for _, tyre in ipairs(localVehicle.tyreburst) do
+			SetVehicleTyreBurst(spawnedVehicle, _, true);
+		end
+
+		for _, window in ipairs(localVehicle.windows) do
+			SmashVehicleWindow(spawnedVehicle, _);
+		end
+		
 	end)
 	_ESX.ShowNotification("Your vehicle with the plate: " .. data.plate .. " has been unimpounded!")
 	SetNewWaypoint(_Impound.SpawnLocations[spawnLocationIndex].x, _Impound.SpawnLocations[spawnLocationIndex].y)
@@ -197,8 +215,30 @@ RegisterNUICallback('escape', function(data, cb)
     -- cb('ok')
 end)
 
-RegisterNUICallback('impound', function(data, cb)	
-	local veh = _ESX.Game.GetVehicleProperties(_ESX.Game.GetClosestVehicle());
+RegisterNUICallback('impound', function(data, cb)
+	local v = _ESX.Game.GetClosestVehicle();
+	local veh = _ESX.Game.GetVehicleProperties(v);
+	
+	veh.engineHealth = GetVehicleEngineHealth(v);
+	veh.bodyHealth = GetVehicleBodyHealth(v);
+	veh.fuelLevel = GetVehicleFuelLevel(v);
+	veh.oilLevel = GetVehicleOilLevel(v);
+	veh.petrolTankHealth = GetVehiclePetrolTankHealth(v);
+	veh.tyreburst = {};
+	for i = 0, 12 do
+		res = IsVehicleTyreBurst(v, i, false);
+		if res ~= nil then
+			veh.tyreburst[i] = res;
+		end
+	end
+
+	veh.windows = {};
+	for i = 0, 12 do
+		res = IsVehicleWindowIntact(v, i);
+		if res ~= nil then
+			veh.windows[i] = res;
+		end
+	end
 	
 	if (veh.plate:gsub("%s+", "") ~= data.plate:gsub("%s+", "")) then
 		_ESX.ShowNotification("The processed vehicle, and nearest vehicle do not match");
