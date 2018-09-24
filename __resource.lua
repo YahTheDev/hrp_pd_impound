@@ -7,7 +7,8 @@ client_scripts {
 server_scripts {
 	'@mysql-async/lib/MySQL.lua',
 	'server.lua',
-	'json.lua'
+	'json.lua',
+	'config.lua',
 }
 
 ui_page('web/index.html')

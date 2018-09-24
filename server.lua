@@ -116,12 +116,32 @@ end)
 RegisterServerEvent('HRP:ESX:GetVehicleAndOwner')
 AddEventHandler('HRP:ESX:GetVehicleAndOwner', function (plate)
 	local _source = source
-	MySQL.Async.fetchAll('select * from `owned_vehicles` LEFT JOIN `users` ON users.identifier = owned_vehicles.owner WHERE `plate` = rtrim(@plate)',
-		{
-			['@plate'] 		= plate,
-		}, function(vehicleAndOwner)
-		TriggerClientEvent('HRP:ESX:SetVehicleAndOwner', _source, vehicleAndOwner[1]);
-	end)
+	if (Config.NoPlateColumn == false) then
+		MySQL.Async.fetchAll('select * from `owned_vehicles` LEFT JOIN `users` ON users.identifier = owned_vehicles.owner WHERE `plate` = rtrim(@plate)',
+			{
+				['@plate'] 		= plate,
+			}, function(vehicleAndOwner)
+			TriggerClientEvent('HRP:ESX:SetVehicleAndOwner', _source, vehicleAndOwner[1]);
+		end)
+	else
+		MySQL.Async.fetchAll('SELECT * FROM `owned_vehicles` LEFT JOIN `users` ON users.identifier = owned_vehicles.owner', {}, function (result)
+			for i=1, #result, 1 do
+				local vehicleProps = json.decode(result[i].vehicle)
+				Citizen.Trace(vehicleProps.plate:gsub("%s+", ""));
+				Citizen.Trace(plate:gsub("%s+", ""));
+				Citizen.Trace('\n')
+
+				if vehicleProps.plate:gsub("%s+", "") == plate:gsub("%s+", "") then
+					vehicleAndOwner = result[i];
+					vehicleAndOwner.plate = vehicleProps.plate;
+					Citizen.Trace("IF SUCCESS")
+					Citizen.Trace(vehicleAndOwner.plate);
+					TriggerClientEvent('HRP:ESX:SetVehicleAndOwner', _source, vehicleAndOwner);
+					break;
+				end
+			end
+		end)
+	end
 end)
 
 

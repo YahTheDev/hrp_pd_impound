@@ -112,8 +112,12 @@ function ShowImpoundMenu (action)
 		
 		TriggerServerEvent('HRP:ESX:GetCharacter', _XPlayer.identifier)
 		TriggerServerEvent('HRP:ESX:GetVehicleAndOwner', v.plate)
-		Citizen.Wait(500)
+		Citizen.Wait(500);
 		
+		if(Config.NoPlateColumn == true) then
+			Citizen.Wait(Config.WaitTime);
+		end
+
 		if(_VehicleAndOwner == nil) then
 			_ESX.ShowNotification('Unknown vehicle owner, cannot impound');
 			return

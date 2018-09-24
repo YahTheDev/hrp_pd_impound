@@ -27,3 +27,12 @@ Config.Rules = {
 
 	minReasonLength	= 10,
 }
+
+--------------------------------------------------------------------------------
+----------------------- SERVERS WITHOUT ESX_MIGRATE ----------------------------
+--------------------------------------------------------------------------------
+-- Should be true if you still have an owned_vehicles table without plate column.
+Config.NoPlateColumn = true
+-- Only change when NoPlateColumn is true, menu's will take longer to show but otherwise you might not have any data.
+-- Try increments of 250
+Config.WaitTime = 250
