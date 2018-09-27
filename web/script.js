@@ -144,7 +144,7 @@ $(document).ready(function () {
 
 			var row = `<tr>
 				<td id="plate">${data.vehicles[i].plate}</td>
-				<td id="date">${releasedate.toLocaleDateString()} ${releasedate.toLocaleTimeString()}</td>
+				<td id="date">${releasedate.toLocaleString(undefined, { hour12: false })}</td>
 				<td id="price">$ ${data.vehicles[i].fee}.00</td>
 				<td id="officer">${officer}</td>`
 
