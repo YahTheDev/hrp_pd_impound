@@ -92,10 +92,12 @@ AddEventHandler('HRP:Impound:VehicleUnimpounded', function (data, index)
 		SetVehicleDirtLevel(spawnedVehicle, localVehicle.dirtLevel);
 
 		for _, tyre in ipairs(localVehicle.tyreburst) do
+			Citizen.Trace("Popping tire? ")
 			SetVehicleTyreBurst(spawnedVehicle, _, true);
 		end
 
 		for _, window in ipairs(localVehicle.windows) do
+			Citizen.Trace("Smashing window! ")
 			SmashVehicleWindow(spawnedVehicle, _);
 		end
 		
@@ -225,7 +227,7 @@ RegisterNUICallback('impound', function(data, cb)
 	veh.oilLevel = GetVehicleOilLevel(v);
 	veh.petrolTankHealth = GetVehiclePetrolTankHealth(v);
 	veh.tyreburst = {};
-	for i = 0, 12 do
+	for i = 0, 7 do
 		res = IsVehicleTyreBurst(v, i, false);
 		if res ~= nil then
 			veh.tyreburst[i] = res;
@@ -233,7 +235,7 @@ RegisterNUICallback('impound', function(data, cb)
 	end
 
 	veh.windows = {};
-	for i = 0, 12 do
+	for i = 0, 7 do
 		res = IsVehicleWindowIntact(v, i);
 		if res ~= nil then
 			veh.windows[i] = res;
