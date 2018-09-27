@@ -43,6 +43,7 @@ AddEventHandler('HRP:Impound:GetImpoundedVehicles', function (identifier)
 		{
 			['@identifier'] = identifier,
 		}, function (impoundedVehicles)
+			print(impoundedVehicles[2].releasedate);
 			TriggerClientEvent('HRP:Impound:SetImpoundedVehicles', _source, impoundedVehicles)
 	end)
 end)
@@ -127,14 +128,10 @@ AddEventHandler('HRP:ESX:GetVehicleAndOwner', function (plate)
 		MySQL.Async.fetchAll('SELECT * FROM `owned_vehicles` LEFT JOIN `users` ON users.identifier = owned_vehicles.owner', {}, function (result)
 			for i=1, #result, 1 do
 				local vehicleProps = json.decode(result[i].vehicle)
-				Citizen.Trace(vehicleProps.plate:gsub("%s+", ""));
-				Citizen.Trace(plate:gsub("%s+", ""));
-				Citizen.Trace('\n')
 
 				if vehicleProps.plate:gsub("%s+", "") == plate:gsub("%s+", "") then
 					vehicleAndOwner = result[i];
 					vehicleAndOwner.plate = vehicleProps.plate;
-					Citizen.Trace("IF SUCCESS")
 					Citizen.Trace(vehicleAndOwner.plate);
 					TriggerClientEvent('HRP:ESX:SetVehicleAndOwner', _source, vehicleAndOwner);
 					break;

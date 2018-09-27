@@ -132,8 +132,9 @@ $(document).ready(function () {
 
 			var officer = "";
 
-			var releasedate = new Date(data.vehicles[i].releasedate);
+			var releasedate = DateStringToUTCDate(data.vehicles[i].releasedate);
 			var currentdate = new Date();
+			console.log(releasedate);
 			console.log(releasedate < currentdate);
 
 			if(data.vehicles[i].officer) {
@@ -276,4 +277,16 @@ $(document).ready(function () {
 		this.setDate(Math.min(n, this.getDaysInMonth()));
 		return this;
 	};
+
+	String.prototype.replaceAt=function(index, replacement) {
+		return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
+	}
+
+	function DateStringToUTCDate(datestring) {
+		datestring = datestring.replaceAt(10, "T");
+		datestring = datestring.replaceAt(datestring.length + 1,"Z");
+		console.log("DATESTRING");
+		console.log(datestring);
+		return new Date(datestring); 
+	}
 });
