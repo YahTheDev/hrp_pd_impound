@@ -17,4 +17,4 @@ ALTER TABLE `h_impounded_vehicles`
 	ADD COLUMN `hold_m` boolean default false;
 
 -- Update 03 Hours
-ALTER TABLE h_impounded_vehicles  MODIFY COLUMN `releasedate` DATETIME;
+ALTER TABLE h_impounded_vehicles  MODIFY COLUMN `releasedate` VARCHAR(25);
