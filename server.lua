@@ -43,7 +43,6 @@ AddEventHandler('HRP:Impound:GetImpoundedVehicles', function (identifier)
 		{
 			['@identifier'] = identifier,
 		}, function (impoundedVehicles)
-			print(impoundedVehicles[2].releasedate);
 			TriggerClientEvent('HRP:Impound:SetImpoundedVehicles', _source, impoundedVehicles)
 	end)
 end)

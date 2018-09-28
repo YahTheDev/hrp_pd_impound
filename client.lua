@@ -82,7 +82,7 @@ AddEventHandler('HRP:Impound:VehicleUnimpounded', function (data, index)
 		_Impound.SpawnLocations[spawnLocationIndex].h, function (spawnedVehicle)
 		_ESX.Game.SetVehicleProperties(spawnedVehicle, localVehicle)
 		
-		
+		dump(localVehicle)
 		print(GetNumVehicleWindowTints(spawnedVehicle));
 		SetVehicleEngineHealth(spawnedVehicle, localVehicle.engineHealth);
 		SetVehicleBodyHealth(spawnedVehicle, localVehicle.bodyHealth);
@@ -91,14 +91,13 @@ AddEventHandler('HRP:Impound:VehicleUnimpounded', function (data, index)
 		SetVehicleOilLevel(spawnedVehicle, localVehicle.oilLevel);
 		SetVehicleDirtLevel(spawnedVehicle, localVehicle.dirtLevel);
 
-		for _, tyre in ipairs(localVehicle.tyreburst) do
-			Citizen.Trace("Popping tire? ")
-			SetVehicleTyreBurst(spawnedVehicle, _, true);
-		end
-
-		for _, window in ipairs(localVehicle.windows) do
+		Citizen.Trace(table.getn(localVehicle.windows))
+		for windowIndex = 1, 7, windowIndex + 1 do
 			Citizen.Trace("Smashing window! ")
-			SmashVehicleWindow(spawnedVehicle, _);
+			Citizen.Trace(localVehicle.windows[windowIndex])
+			if(localVehicle.windows[windowIndex] == false) then
+				SmashVehicleWindow(spawnedVehicle, windowIndex);
+			end
 		end
 		
 	end)
@@ -375,7 +374,18 @@ Citizen.CreateThread(function()
   end
 end)
 
-
+function dump(o)
+	if type(o) == 'table' then
+	   local s = '{ '
+	   for k,v in pairs(o) do
+		  if type(k) ~= 'number' then k = '"'..k..'"' end
+		  s = s .. '['..k..'] = ' .. dump(v) .. ','
+	   end
+	   return s .. '} '
+	else
+	   return tostring(o)
+	end
+ end
 
 
 
