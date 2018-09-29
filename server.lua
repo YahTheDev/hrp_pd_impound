@@ -20,9 +20,9 @@ AddEventHandler('HRP:Impound:ImpoundVehicle', function (form)
 			['@plate'] 			= form.plate,
 			['@officer']     	= form.officer,
 			['@mechanic']       = form.mechanic,
-			['@releasedate']	= form.releasedate, 
-			['@fee']			= form.fee, 
-			['@reason']			= form.reason, 
+			['@releasedate']	= form.releasedate,
+			['@fee']			= form.fee,
+			['@reason']			= form.reason,
 			['@notes']			= form.notes,
 			['@vehicle']		= form.vehicle,
 			['@identifier']		= form.identifier,
@@ -50,27 +50,27 @@ end)
 AddEventHandler('HRP:Impound:UnimpoundVehicle', function (plate)
 	_source = source;
 	xPlayer = _ESX.GetPlayerFromId(_source)
-		
+
 	_UnimpoundedVehicleCount = _UnimpoundedVehicleCount + 1;
-	
+
 	Citizen.Trace('HRP: Unimpounding Vehicle with plate: ' .. plate);
-	
+
 	local veh = MySQL.Sync.fetchAll('SELECT * FROM `h_impounded_vehicles` WHERE `plate` = @plate',
 	{
 		['@plate'] = plate,
 	})
-	
+
 	if(veh == nil) then
 		TriggerClientEvent("HRP:Impound:CannotUnimpound")
 		return
 	end
-	
+
 	if (xPlayer.getMoney() < veh[1].fee) then
 		TriggerClientEvent("HRP:Impound:CannotUnimpound")
 	else
-		
+
 		xPlayer.removeMoney(round(veh[1].fee));
-		
+
 		MySQL.Async.execute('DELETE FROM `h_impounded_vehicles` WHERE `plate` = @plate',
 		{
 			['@plate'] = plate,
@@ -91,10 +91,10 @@ AddEventHandler('HRP:Impound:GetVehicles', function ()
 	end);
 end)
 
-AddEventHandler('HRP:Impound:UnlockVehicle', function (plate) 
+AddEventHandler('HRP:Impound:UnlockVehicle', function (plate)
 	MySQL.Async.execute('UPDATE `h_impounded_vehicles` SET `hold_m` = false, `hold_o` = false WHERE `plate` = @plate', {
 		['@plate'] = plate
-	}, function (bs) 
+	}, function (bs)
 		-- Something
 	end)
 end)
