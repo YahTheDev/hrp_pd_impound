@@ -20,12 +20,12 @@ local _ImpoundedVehicles = nil;
 ----------------------------------------------------------------------------------------------------
 
 Citizen.CreateThread(function ()
-	
+
 	while _ESX == nil do
 		TriggerEvent("esx:getSharedObject", function(obj) _ESX = obj end)
 		Citizen.Wait(10)
 	end
-	
+
 	while _ESX.GetPlayerData().job == nil do
 		Citizen.Wait(10)
 	end
@@ -78,12 +78,10 @@ AddEventHandler('HRP:Impound:VehicleUnimpounded', function (data, index)
 	local spawnLocationIndex = index % 3 + 1
 	local localVehicle = json.decode(data.vehicle)
 	print(localVehicle.health);
-	_ESX.Game.SpawnVehicle(localVehicle.model, _Impound.SpawnLocations[spawnLocationIndex], 
+	_ESX.Game.SpawnVehicle(localVehicle.model, _Impound.SpawnLocations[spawnLocationIndex],
 		_Impound.SpawnLocations[spawnLocationIndex].h, function (spawnedVehicle)
 		_ESX.Game.SetVehicleProperties(spawnedVehicle, localVehicle)
-		
-		dump(localVehicle)
-		print(GetNumVehicleWindowTints(spawnedVehicle));
+
 		SetVehicleEngineHealth(spawnedVehicle, localVehicle.engineHealth);
 		SetVehicleBodyHealth(spawnedVehicle, localVehicle.bodyHealth);
 		SetVehicleFuelLevel(spawnedVehicle, localVehicle.fuelLevel);
@@ -91,15 +89,20 @@ AddEventHandler('HRP:Impound:VehicleUnimpounded', function (data, index)
 		SetVehicleOilLevel(spawnedVehicle, localVehicle.oilLevel);
 		SetVehicleDirtLevel(spawnedVehicle, localVehicle.dirtLevel);
 
-		Citizen.Trace(table.getn(localVehicle.windows))
-		for windowIndex = 1, 7, windowIndex + 1 do
+		for windowIndex = 1, 13, 1 do
 			Citizen.Trace("Smashing window! ")
-			Citizen.Trace(localVehicle.windows[windowIndex])
 			if(localVehicle.windows[windowIndex] == false) then
 				SmashVehicleWindow(spawnedVehicle, windowIndex);
 			end
 		end
-		
+
+		for tyreIndex = 1, 7, 1 do
+			Citizen.Trace("Pooppiiiin! ")
+			if(localVehicle.tyresburst[tyreIndex] ~= false) then
+				SetVehicleTyreBurst(spawnedVehicle, tyreIndex, true, 1000);
+			end
+		end
+
 	end)
 	_ESX.ShowNotification("Your vehicle with the plate: " .. data.plate .. " has been unimpounded!")
 	SetNewWaypoint(_Impound.SpawnLocations[spawnLocationIndex].x, _Impound.SpawnLocations[spawnLocationIndex].y)
@@ -118,21 +121,21 @@ function ShowImpoundMenu (action)
 
 	local pos = GetEntityCoords(GetPlayerPed(PlayerId()))
 	local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.0, 0, 71)
-	
+
 	if (IsPedInAnyVehicle(GetPlayerPed(PlayerId()))) then
 		_ESX.ShowNotification("Leave the vehicle first")
 		return
 	end
-	
-	
+
+
 	if (vehicle ~= nil) then
 		local v = _ESX.Game.GetVehicleProperties(vehicle)
 		local data = {}
-		
+
 		TriggerServerEvent('HRP:ESX:GetCharacter', _XPlayer.identifier)
 		TriggerServerEvent('HRP:ESX:GetVehicleAndOwner', v.plate)
 		Citizen.Wait(500);
-		
+
 		if(Config.NoPlateColumn == true) then
 			Citizen.Wait(Config.WaitTime);
 		end
@@ -141,35 +144,35 @@ function ShowImpoundMenu (action)
 			_ESX.ShowNotification('Unknown vehicle owner, cannot impound');
 			return
 		end
-		
+
 		data.action = "open"
 		data.form 	= "impound"
 		data.rules  = Config.Rules
-		data.vehicle = { 
+		data.vehicle = {
 			plate = _VehicleAndOwner.plate,
 			owner = _VehicleAndOwner.firstname .. ' ' .. _VehicleAndOwner.lastname
 			}
-			
+
 		if (_XPlayer.job.name == 'police') then
 			data.officer = _OwnPlayerData.firstname .. ' ' .. _OwnPlayerData.lastname;
 			_GuiEnabled = true
 			SetNuiFocus(true, true)
 			SendNuiMessage(json.encode(data))
 		end
-		
+
 		if (_XPlayer.job.name == 'mecano') then
 			data.mechanic = _OwnPlayerData.firstname .. ' ' .. _OwnPlayerData.lastname;
 			_GuiEnabled = true
 			SetNuiFocus(true, true)
 			SendNuiMessage(json.encode(data))
 		end
-	else 
+	else
 		_ESX.ShowNotification('No vehicle nearby');
 	end
-	
+
 end
 
-function ShowAdminTerminal () 
+function ShowAdminTerminal ()
 	_XPlayer = _ESX.GetPlayerData()
 	_GuiEnabled = true
 
@@ -184,7 +187,7 @@ function ShowAdminTerminal ()
 		job = _XPlayer.job,
 		vehicles = _ImpoundedVehicles
 	}
-	
+
 	SendNuiMessage(json.encode(data))
 end
 
@@ -198,13 +201,13 @@ function DisableImpoundMenu ()
 end
 
 function ShowRetrievalMenu ()
-	
+
 	_XPlayer = _ESX.GetPlayerData()
 
 	TriggerServerEvent('HRP:ESX:GetCharacter', _XPlayer.identifier)
 	TriggerServerEvent('HRP:Impound:GetImpoundedVehicles', _XPlayer.identifier)
 	Citizen.Wait(500)
-		
+
 	_GuiEnabled = true
 	SetNuiFocus(true, true)
 	local data = {
@@ -227,40 +230,48 @@ end)
 RegisterNUICallback('impound', function(data, cb)
 	local v = _ESX.Game.GetClosestVehicle();
 	local veh = _ESX.Game.GetVehicleProperties(v);
-	
+
 	veh.engineHealth = GetVehicleEngineHealth(v);
 	veh.bodyHealth = GetVehicleBodyHealth(v);
 	veh.fuelLevel = GetVehicleFuelLevel(v);
 	veh.oilLevel = GetVehicleOilLevel(v);
 	veh.petrolTankHealth = GetVehiclePetrolTankHealth(v);
-	veh.tyreburst = {};
-	for i = 0, 7 do
+	veh.tyresburst = {};
+	for i = 1, 7 do
 		res = IsVehicleTyreBurst(v, i, false);
 		if res ~= nil then
-			veh.tyreburst[i] = res;
+			veh.tyresburst[#veh.tyresburst+1] = res;
+			if res == false then
+				res = IsVehicleTyreBurst(v, i, true);
+				veh.tyresburst[#veh.tyresburst] = res;
+			end
+		else
+			veh.tyresburst[#veh.tyresburst+1] = false;
 		end
 	end
 
 	veh.windows = {};
-	for i = 0, 7 do
+	for i = 1, 13 do
 		res = IsVehicleWindowIntact(v, i);
 		if res ~= nil then
-			veh.windows[i] = res;
+			veh.windows[#veh.windows+1] = res;
+		else
+			veh.windows[#veh.windows+1] = true;
 		end
 	end
-	
+
 	if (veh.plate:gsub("%s+", "") ~= data.plate:gsub("%s+", "")) then
 		_ESX.ShowNotification("The processed vehicle, and nearest vehicle do not match");
 		return
 	end
-	
+
 	data.vehicle = json.encode(veh);
 	data.identifier = _VehicleAndOwner.identifier;
-	
+
 	TriggerServerEvent('HRP:Impound:ImpoundVehicle', data)
-	
+
 	_ESX.Game.DeleteVehicle(_ESX.Game.GetClosestVehicle());
-	
+
 	DisableImpoundMenu()
     -- cb('ok')
 end)
@@ -288,29 +299,29 @@ Citizen.CreateThread(function ()
 		if(_DependenciesLoaded) then
 			local PlayerPed = GetPlayerPed(PlayerId())
 			local PlayerPedCoords = GetEntityCoords(PlayerPed)
-			
+
 			if (GetDistanceBetweenCoords(_Impound.RetrieveLocation.X, _Impound.RetrieveLocation.Y, _Impound.RetrieveLocation.Z,
 				PlayerPedCoords.x, PlayerPedCoords.y, PlayerPedCoords.z, false) < 3) then
-					
+
 				inZone = true;
-				
-				if (_CurrentAction ~= "retrieve") then	
-				
+
+				if (_CurrentAction ~= "retrieve") then
+
 					_CurrentAction = "retrieve"
-					_ESX.ShowHelpNotification("Press ~INPUT_CONTEXT~ To unimpound a vehicle");	
-					
+					_ESX.ShowHelpNotification("Press ~INPUT_CONTEXT~ To unimpound a vehicle");
+
 				end
-							
+
 			elseif (GetDistanceBetweenCoords(_Impound.StoreLocation.X, _Impound.StoreLocation.Y, _Impound.StoreLocation.Z,
 				PlayerPedCoords.x, PlayerPedCoords.y, PlayerPedCoords.z, false) < 3) then
 
 				inZone = true;
-				
+
 				if (_CurrentAction ~= "store" and (_XPlayer.job.name == "police" or _XPlayer.job.name == "mecano")) then
-				
+
 					_CurrentAction = "store"
 					_ESX.ShowHelpNotification("Press ~INPUT_CONTEXT~ To impound this vehicle");
-					
+
 				end
 
 			else
@@ -321,11 +332,11 @@ Citizen.CreateThread(function ()
 						inZone = true;
 
 						if (_CurrentAction ~= "admin" and (_XPlayer.job.name == "police" or _XPlayer.job.name == "mecano")) then
-				
+
 							_CurrentAction = "admin"
-							_ESX.ShowHelpNotification("Press ~INPUT_CONTEXT~ To open the admin terminal");			
+							_ESX.ShowHelpNotification("Press ~INPUT_CONTEXT~ To open the admin terminal");
 						end
-					
+
 						break;
 					end
 				end
@@ -342,7 +353,7 @@ Citizen.CreateThread(function ()
 
 	while true do
 		Citizen.Wait(0)
-		if (IsControlJustReleased(0, 38)) then	
+		if (IsControlJustReleased(0, 38)) then
 			if (_CurrentAction == "retrieve") then
 				ShowRetrievalMenu()
 			elseif (_CurrentAction == "store") then
@@ -386,25 +397,3 @@ function dump(o)
 	   return tostring(o)
 	end
  end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
