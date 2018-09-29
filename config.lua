@@ -30,6 +30,7 @@ Config.Rules = {
 
 --------------------------------------------------------------------------------
 ----------------------- SERVERS WITHOUT ESX_MIGRATE ----------------------------
+---------------- This could work, it also could not work... --------------------
 --------------------------------------------------------------------------------
 -- Should be true if you still have an owned_vehicles table without plate column.
 Config.NoPlateColumn = true
