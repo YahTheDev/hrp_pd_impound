@@ -84,9 +84,6 @@ AddEventHandler('HRP:Impound:GetVehicles', function ()
 	_source = source;
 
 	local vehicles = MySQL.Async.fetchAll('SELECT * FROM `h_impounded_vehicles`', nil, function (vehicles)
-		Citizen.Trace("VEHICLES")
-		Citizen.Trace(vehicles[1].plate)
-
 		TriggerClientEvent('HRP:Impound:SetImpoundedVehicles', _source, vehicles);
 	end);
 end)
@@ -131,7 +128,6 @@ AddEventHandler('HRP:ESX:GetVehicleAndOwner', function (plate)
 				if vehicleProps.plate:gsub("%s+", "") == plate:gsub("%s+", "") then
 					vehicleAndOwner = result[i];
 					vehicleAndOwner.plate = vehicleProps.plate;
-					Citizen.Trace(vehicleAndOwner.plate);
 					TriggerClientEvent('HRP:ESX:SetVehicleAndOwner', _source, vehicleAndOwner);
 					break;
 				end
