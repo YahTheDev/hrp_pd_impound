@@ -17,12 +17,20 @@ Config.Impound 			= {
 	}
 }
 
+Config.BlipStyling = {
+	Colour           = 3,
+	Sprite			= 430,
+	Display			= 4,
+	Scale 			= 1.0,
+	BlipName		= "Police Impound"
+}
+
 Config.Rules = {
-	maxWeeks		= 5,
+	maxWeeks		= 2,
 	maxDays			= 6,
 	maxHours		= 24,
 
-	minFee			= 50,
+	minFee			= 5000,
 	maxFee 			= 15000,
 
 	minReasonLength	= 10,
