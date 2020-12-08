@@ -8,21 +8,21 @@
         <img id="cursor" src="cursor.png">
 
         <div id="impound-form">
-			<h1>Vehicle Impoundment Form</h1>
+			<h1>Vehicle impound</h1>
 			<hr>
 			<div id="veh-info">
-				<p id="owner">Unknown</p>
-				<p id="plate">Unknown</p>
+				<p id="owner">Onbekend</p>
+				<p id="plate">Onbekend</p>
 			</div>
 			<hr>
 			<div id="names" class="row">
-				<label>Authorizing officer: </label>
+				<label>Uitvoerende agent: </label>
 				<input id="officer" class="form-control" name="officer" placeholder="First & Lastname"/>
-				<label>Mechanic: </label>
+				<label>Takeldienst: </label>
 				<input id="mechanic" class="form-control" name="officer" placeholder="First & Lastname"/>
 			</div>
 			<div id="duration-row">
-				<label>Duration:* </label>
+				<label>Duur: </label>
 				<div id="duration">
 					<input type="number" min="0" max="41" id="weeks" class="form-control" name="weeks" placeholder="0 - 41 Weeks"/>
 					<input type="number" min="0" max="6" id="days" class="form-control" name="days" placeholder="0 - 6 Days"/>
@@ -30,48 +30,48 @@
 				</div>
 			</div>
 			<div id="fee-row">
-					<label>Fee:* </label>
+					<label>Prijs: </label>
 					<input type="number" min="250" max="1000000" id="fee" class="form-control" name="fee" placeholder="250 - 1.000.000"/>
 			</div>
 			<hr>
 			<div class="form-group">
-				<label>Reason stated:* </label>
+				<label>Reden: </label>
 				<textarea id="reason" class="form-control" name="reason" placeholder="Enter a detailed description of 25 characters or more" rows="8"></textarea>
 			</div>
 			<hr>
 			<div class="form-group">
-				<label>Other / Notes: </label>
+				<label>Notities: </label>
 				<textarea id="reason" class="form-control" name="reason" placeholder="Reason" rows="3"></textarea>
 			</div>
 			<hr>
 			<div id="hold_o" class="form-group checkbox">
-				This vehicle must be unlocked by an officer: <input type="checkbox">
+				Dit voertuig moet uit de impound gehaald worden door een agent: <input type="checkbox">
 			</div>
 			<div id="hold_m" class="form-group checkbox">
-				This vehicle must be unlocked by a mechanic: <input type="checkbox">
+				Dit voertuig moet uit de impound gehaald worden door een mechanieker: <input type="checkbox">
 			</div>
 			<div id="errors">
 			
 			</div>
 			<div id="actions">
-				<button class="btn cancel mr" id="cancel">Cancel</button>
+				<button class="btn cancel mr" id="cancel">Annuleer</button>
 				<button class="btn success" id="impound">Impound</button>
 			</div>
         </div>
 		
 		<div id="retrieve-form">
-			<h1>Vehicle Unimpoundment Form</h1>
+			<h1>Auto uit de impound log</h1>
 			<span id="exit">&#x2715;</span>
 			<hr>
 			<div class="scrollable">
 				<table>
 					<thead>
 						<tr>
-							<th>Plate</th>
-							<th>Release date </th>
-							<th>Fee</th>
-							<th>Authorizing officer</th>
-							<th>Actions</th>
+							<th>Nummerplaat</th>
+							<th>Datum van vrijlating</th>
+							<th>Prijs </th>
+							<th>Gemachtigde agent</th>
+							<th>Acties </th>
 						</tr>
 					</thead>
 					<tbody id="impounded-vehicles">
@@ -80,24 +80,24 @@
 				</table>
 			</div>
 			<hr>
-			<p> Why was my vehicle impounded? </p>
+			<p> Waarom is mijn voertuig in de impound geplaatst? </p>
 			<textarea id="r-reason" class="form-control" disabled rows="5"></textarea>
 			<p id="hold-by" class="error"></p>
 		</div>
 		
 		<div id="admin-terminal">
-			<h1>Impounded Vehicles</h1>
+			<h1>In beslag genomen voertuigen</h1>
 			<span id="exit">&#x2715;</span>
 			<hr>
 			<div class="scrollable">
 				<table>
 					<thead>
 						<tr>
-							<th>Plate</th>
-							<th>Release date </th>
-							<th>Fee</th>
-							<th>Authorizing officer</th>
-							<th>Actions</th>
+							<th>Nummerplaat</th>
+							<th>Datum van vrijstelling </th>
+							<th>Prijs</th>
+							<th>Gemachtigde agent </th>
+							<th>Acties</th>
 						</tr>
 					</thead>
 					<tbody id="admin-impounded-vehicles">
@@ -106,7 +106,7 @@
 				</table>
 			</div>
 			<hr>
-			<p> Why was the vehicle impounded? </p>
+			<p> Waarom is het voertuig in beslag genomen? </p>
 			<textarea id="admin-reason" class="form-control" disabled rows="5"></textarea>
 		</div>
 
