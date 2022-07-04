@@ -1,5 +1,10 @@
 ## PD IMPOUND
 
+* For impound menu add this export to you script according to your need it will open impound menu where ever u access using menu
+
+TriggerEvent('HRP:ESX:impoundMenu')
+
+
 * I'm not sure if I will expand it in the future, if you do find any bugs though please let me know.
 * This script does not stop players from spawning vehicles elsewhere, you'll probably want to disable the spawning of vehicles in another script if the user's plate is found in the impounded table.
 * You're allowed to impound if you either have the police job, or the mecano job.
@@ -25,7 +30,6 @@ Warning:
 - **I will not be responsible for any damage this script could cause.**
 
 Known limitations:
-- When a player switches jobs they have to relog in order to be able to use these functionalities. This is because playerdata is only loaded at the start. This is the way it is for now.
 - If a user registred during this session the functionalities also seem to run into some problems, probably because of the same reason as the previous point.
 
 Any suggestions, help / tips or bug reports are welcome.
