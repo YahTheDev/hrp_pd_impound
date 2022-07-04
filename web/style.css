@@ -1,0 +1,218 @@
+
+#cursor {
+    position: absolute;
+    z-index: 999999;
+    display: none;
+}
+
+#exit {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	z-index: 999;
+	color: grey;
+}
+
+#impound-form, #retrieve-form, #admin-terminal {
+	overflow: hidden;
+	font-family: sans-serif;
+    width: 740px;
+	height: fit-content;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+	bottom: 200px;
+    padding: 20px;
+    background-color: #f9f9f9;
+	border-radius: 4px;
+	border : solid black 4px;
+
+}
+
+#impound-form {
+	display: none;
+}
+
+#impound-form #veh-info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: -5px;
+	margin-bottom: -5px;
+}
+
+#impound-form #veh-info * {
+	font-weight: bold;
+	max-width : 50%;
+	
+}
+
+#impound-form #actions {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: 10px;
+}
+
+label {
+	display: block;
+	margin-bottom: 2px;
+}
+
+.form-control {
+	max-width: 100%;
+	width: 100%;
+	border: solid 1px gray;
+	border-radius: 4px;
+	min-height: 40px;
+	margin-bottom: 5px;
+	padding: 10px 5px;
+}
+
+#names label {
+	width: 50%;
+	display: inline-block;
+	
+}
+
+#impound-form #officer, #impound-form #mechanic, #impound-form #duration {
+	width: calc(50% - 5px);
+	display: inline-block;
+}
+
+#impound-form #weeks, #impound-form #days, #impound-form #hours {
+	width: calc((100% - 8px) / 3);
+}
+
+#impound-form #weeks {
+	margin-right: -1px;
+}
+
+#impound-form #day {
+	width: 50%;
+	display: inline-block;
+}
+
+#days {
+	width: calc(50% + 2px);
+}
+
+#duration-row label {
+	width: 50%;
+	display: inline-block;
+}
+
+#impound-form #fee-row label, #fee {
+	display: inline-block;
+	width: calc(50% - 3px);
+}
+
+#impound-form #fee {
+	margin-left: 2px;
+	margin-right: -2px;
+}
+
+#impound-form #errors {
+	width: 100%;
+}
+
+#impound-form #errors * {
+	color: red;
+	display: block;
+	width: 100%;
+	list-style-type: disc;
+}
+
+
+/* Retrieve form */
+#retrieve-form {
+	display: none;
+	bottom: 350px;
+}
+
+/* Global */
+h1 {
+	font-size: 16px;
+	text-transform: uppercase;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+#retrieve-form td:last-of-type {
+	text-align: right;
+}
+
+table .btn {
+	padding: 10px 20px;
+}
+
+.scrollable {
+	max-height: 300px;
+	overflow-y: scroll;
+}
+
+table tbody {
+	height: fit-content;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn {
+	padding: 10px 35px;
+	background-color: #4286f4;
+	border-radius: 4px;
+	border: none;
+	color: white;
+}
+
+.btn[disabled] {
+	opacity: 0.7;
+}
+
+.success {
+	background-color: #1dd855;
+}
+
+.cancel {
+	background-color: #d81e1e;
+}
+
+.mr {
+	margin-right: 5px;
+}
+
+.ml {
+	margin-left: 5px;
+}
+
+#admin-terminal {
+	display: none;
+	bottom: 500;
+}
+
+.checkbox {
+	width: 60%;
+	display: block;
+}
+
+.checkbox input {
+	position: absolute;
+	left: 350px;
+}
+
+.error {
+	color: #d81e1e;
+	display: block;
+	font-weight: bold;
+}
