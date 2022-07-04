@@ -2,8 +2,7 @@ fx_version 'adamant'
 
 game 'gta5'
 
-description 'esx_impounds'
-
+description 'hrp_pd_impound'
 
 client_scripts {
 	"@es_extended/locale.lua",
